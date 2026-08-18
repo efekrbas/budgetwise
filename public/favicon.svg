@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080712"/>
+      <stop offset="100%" stop-color="#050508"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="bGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <rect width="512" height="512" rx="128" stroke="rgba(168,85,247,0.3)" stroke-width="4" />
+
+  <!-- Outer Shield Glow -->
+  <path d="M256 64 L396 118 C396 260 336 380 256 448 C176 380 116 260 116 118 Z" 
+        stroke="url(#shieldGrad)" stroke-width="12" fill="rgba(168,85,247,0.08)" filter="url(#glow)"/>
+
+  <!-- Inner 0G Lattice Ring -->
+  <circle cx="256" cy="240" r="100" stroke="rgba(6,182,212,0.4)" stroke-width="3" stroke-dasharray="8 6"/>
+  <circle cx="256" cy="240" r="60" stroke="rgba(168,85,247,0.3)" stroke-width="2"/>
+
+  <!-- Connected Nodes -->
+  <circle cx="256" cy="140" r="7" fill="#06b6d4" filter="url(#glow)"/>
+  <circle cx="340" cy="190" r="6" fill="#a855f7" filter="url(#glow)"/>
+  <circle cx="340" cy="290" r="6" fill="#ec4899" filter="url(#glow)"/>
+  <circle cx="256" cy="340" r="7" fill="#06b6d4" filter="url(#glow)"/>
+  <circle cx="172" cy="290" r="6" fill="#a855f7" filter="url(#glow)"/>
+  <circle cx="172" cy="190" r="6" fill="#ec4899" filter="url(#glow)"/>
+
+  <!-- Lattice Lines -->
+  <line x1="256" y1="140" x2="340" y2="190" stroke="rgba(6,182,212,0.5)" stroke-width="2"/>
+  <line x1="340" y1="190" x2="340" y2="290" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+  <line x1="340" y1="290" x2="256" y2="340" stroke="rgba(236,72,153,0.5)" stroke-width="2"/>
+  <line x1="256" y1="340" x2="172" y2="290" stroke="rgba(6,182,212,0.5)" stroke-width="2"/>
+  <line x1="172" y1="290" x2="172" y2="190" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+  <line x1="172" y1="190" x2="256" y2="140" stroke="rgba(236,72,153,0.5)" stroke-width="2"/>
+
+  <!-- Central Stylized 'B' + '0G' Emblem -->
+  <!-- Isometric 'B' -->
+  <path d="M220 170 H270 C292 170 305 182 305 200 C305 214 296 225 282 230 C300 236 312 250 312 270 C312 292 295 306 270 306 H220 Z" 
+        fill="url(#bGrad)" filter="url(#glow)"/>
+  <path d="M245 192 H266 C276 192 282 196 282 204 C282 212 276 216 266 216 H245 Z" fill="#080712"/>
+  <path d="M245 238 H268 C280 238 288 244 288 254 C288 264 280 270 268 270 H245 Z" fill="#080712"/>
+
+  <!-- 0G Dot Accent -->
+  <circle cx="330" cy="315" r="9" fill="#06b6d4" filter="url(#glow)"/>
+</svg>
