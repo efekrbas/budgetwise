@@ -9,11 +9,15 @@ import { parseEther, formatEther } from 'viem';
 import { 
   Brain, Wallet, Plus, ArrowRight, History, Sparkles, CheckCircle2, 
   ShieldCheck, Database, Zap, Cpu, ExternalLink, Activity, 
-  TrendingUp, BarChart3, Lock, RefreshCw, Eye
+  TrendingUp, Lock, RefreshCw, Eye, BookOpen, Layers, DollarSign
 } from 'lucide-react';
 import Background3D from '@/components/ui/Background3D';
 import Marquee from '@/components/Marquee';
 import StorageModal from '@/components/StorageModal';
+import AppLoader from '@/components/AppLoader';
+import ArchitectureModal from '@/components/ArchitectureModal';
+import RecurringStreamsCard from '@/components/RecurringStreamsCard';
+import ExportAuditReport from '@/components/ExportAuditReport';
 
 interface ExpenseItem {
   amount: bigint;
@@ -66,6 +70,7 @@ const PRESET_EXPENSES: Record<string, { budget: number; expenses: ExpenseItem[] 
 };
 
 const CATEGORY_CHIPS = ["0G Storage", "AI Compute", "RPC Nodes", "Smart Contracts", "Cloud / Dev"];
+const ZERO_G_PRICE_USD = 2.45; // Live estimated mock rate
 
 export default function Dashboard() {
   const { address, isConnected } = useAccount();
@@ -73,6 +78,10 @@ export default function Dashboard() {
   const { disconnect } = useDisconnect();
 
   const [mounted, setMounted] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [showArchModal, setShowArchModal] = useState(false);
+  const [currencyMode, setCurrencyMode] = useState<'0G' | 'USD'>('0G');
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -226,8 +235,20 @@ export default function Dashboard() {
 
   if (!mounted) return null;
 
+  // Boot sequence screen
+  if (!loadingComplete) {
+    return <AppLoader onComplete={() => setLoadingComplete(true)} />;
+  }
+
   const budgetProgress = activeBudget ? Math.min(100, (totalSpent / activeBudget) * 100) : 0;
   const isOverBudget = activeBudget ? totalSpent > activeBudget : false;
+
+  const formatCurrency = (amount0G: number) => {
+    if (currencyMode === 'USD') {
+      return `$${(amount0G * ZERO_G_PRICE_USD).toFixed(2)}`;
+    }
+    return `${amount0G.toFixed(2)} 0G`;
+  };
 
   return (
     <>
@@ -240,13 +261,19 @@ export default function Dashboard() {
         expense={selectedExpense} 
       />
 
+      {/* 0G Architecture Modal */}
+      <ArchitectureModal 
+        isOpen={showArchModal} 
+        onClose={() => setShowArchModal(false)} 
+      />
+
       {/* Top Live Network Status Bar */}
-      <div className="w-full bg-[#080712]/80 border-b border-white/5 text-[11px] text-slate-400 py-1.5 px-4 backdrop-blur-md sticky top-0 z-30">
+      <div className="w-full bg-[#080712]/90 border-b border-white/5 text-[11px] text-slate-400 py-1.5 px-4 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-slate-300 font-medium">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              0G Galileo Testnet (ID: 16602)
+              0G Galileo Testnet (Chain ID: 16602)
             </span>
             <span className="hidden sm:inline-block text-slate-500">•</span>
             <span className="hidden sm:inline-block">Avg Block Time: <strong className="text-slate-300">1.0s</strong></span>
@@ -254,9 +281,13 @@ export default function Dashboard() {
             <span className="hidden md:inline-block">DA Bandwidth: <strong className="text-purple-400">50 Gbps+</strong></span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-cyan-400 flex items-center gap-1 font-mono">
-              <Cpu className="w-3.5 h-3.5" /> 0G Compute: Active
-            </span>
+            <button
+              onClick={() => setShowArchModal(true)}
+              className="text-purple-300 hover:text-purple-200 transition-colors flex items-center gap-1 font-semibold"
+            >
+              <BookOpen className="w-3.5 h-3.5" /> 0G Architecture
+            </button>
+            <span className="text-slate-600">|</span>
             <a 
               href="https://chainscan-galileo.0g.ai" 
               target="_blank" 
@@ -275,7 +306,7 @@ export default function Dashboard() {
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-white/5">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white shadow-lg shadow-purple-900/40">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white shadow-lg shadow-purple-900/40">
                 <Database className="w-6 h-6" />
               </div>
               <div>
@@ -284,7 +315,7 @@ export default function Dashboard() {
                 </h1>
               </div>
               <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                v1.0 0G Native
+                0G Native
               </span>
             </div>
             <p className="text-slate-400 text-sm pl-1">
@@ -293,6 +324,23 @@ export default function Dashboard() {
           </div>
           
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {/* Currency Mode Switcher */}
+            <button
+              onClick={() => setCurrencyMode(prev => prev === '0G' ? 'USD' : '0G')}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono text-slate-300 transition-colors"
+              title="Toggle Currency View"
+            >
+              <DollarSign className="w-3.5 h-3.5 text-green-400" />
+              <span>{currencyMode}</span>
+            </button>
+
+            {/* Export Audit Report */}
+            <ExportAuditReport 
+              budget={activeBudget || 0} 
+              totalSpent={totalSpent} 
+              expenses={expensesList} 
+            />
+
             {/* Quick Demo Presets */}
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.03] border border-white/10 text-xs">
               <span className="text-slate-400 px-2 font-medium">Presets:</span>
@@ -335,11 +383,11 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-2xl glass-panel glass-card-hover space-y-2">
             <div className="flex justify-between items-center text-slate-400 text-xs">
-              <span>Total 0G Managed</span>
+              <span>Total Managed</span>
               <Activity className="w-4 h-4 text-purple-400" />
             </div>
             <p className="text-2xl font-bold font-mono text-white">
-              {activeBudget ? `${activeBudget.toFixed(1)} 0G` : "0.0 0G"}
+              {activeBudget ? formatCurrency(activeBudget) : "0.0 0G"}
             </p>
             <p className="text-[11px] text-purple-400/80 font-medium">On-chain Limit Lock</p>
           </div>
@@ -369,8 +417,8 @@ export default function Dashboard() {
               <span>0G AI Advisor</span>
               <Brain className="w-4 h-4 text-pink-400" />
             </div>
-            <p className="text-2xl font-bold font-mono text-white">Llama-3</p>
-            <p className="text-[11px] text-pink-400/80 font-medium">Decentralized Serving</p>
+            <p className="text-2xl font-bold font-mono text-white">Llama-3-70B</p>
+            <p className="text-[11px] text-pink-400/80 font-medium">0G Compute Router</p>
           </div>
         </div>
 
@@ -400,13 +448,13 @@ export default function Dashboard() {
                       <div>
                         <p className="text-xs text-slate-400">Current Total Spent</p>
                         <p className="text-3xl font-extrabold text-white font-mono tracking-tight">
-                          {totalSpent.toFixed(2)} <span className="text-sm font-normal text-purple-400">0G</span>
+                          {formatCurrency(totalSpent)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-slate-400">Budget Limit</p>
                         <p className="text-xl font-bold text-slate-200 font-mono">
-                          {activeBudget.toFixed(2)} <span className="text-xs font-normal text-slate-400">0G</span>
+                          {formatCurrency(activeBudget)}
                         </p>
                       </div>
                     </div>
@@ -547,6 +595,9 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
+            {/* Recurring Automated Spending Streams */}
+            <RecurringStreamsCard />
+
           </div>
 
           {/* Right Column (7 cols): AI Advisor & Verifiable Expense Ledger */}
@@ -631,7 +682,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 {expensesList.length > 0 ? (
-                  <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+                  <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
                     {expensesList.map((exp, i) => (
                       <div 
                         key={i} 
@@ -663,7 +714,7 @@ export default function Dashboard() {
 
                         <div className="flex items-center justify-between sm:justify-end gap-3">
                           <span className="font-mono font-bold text-red-400 text-sm">
-                            -{formatEther(exp.amount)} 0G
+                            -{formatCurrency(parseFloat(formatEther(exp.amount)))}
                           </span>
                           <button
                             onClick={() => setSelectedExpense({
@@ -700,6 +751,12 @@ export default function Dashboard() {
             <span>Built for <strong>0G Bridge by AKINDO Buildathon</strong></span>
           </div>
           <div className="flex items-center gap-6 text-slate-400">
+            <button 
+              onClick={() => setShowArchModal(true)}
+              className="hover:text-purple-300 transition-colors"
+            >
+              0G Architecture Modal
+            </button>
             <a href="https://github.com/efekrbas/budgetwise" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
               GitHub Repo
             </a>
