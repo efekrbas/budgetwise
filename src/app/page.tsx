@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useConnect, useDisconnect, useWriteContract, useReadContract, useWaitForTransactionReceipt } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -22,6 +22,11 @@ export default function Dashboard() {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [budgetLimit, setBudgetLimit] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
@@ -129,6 +134,8 @@ export default function Dashboard() {
       setIsAnalyzing(false);
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <>
