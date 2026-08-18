@@ -70,11 +70,6 @@ export default function Background3D() {
       <Canvas dpr={[1, 2]} gl={{ powerPreference: 'high-performance', antialias: false }}>
         <ambientLight intensity={0.2} />
         <WavyPlane />
-        
-        <EffectComposer disableNormalPass>
-          <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} />
-          <Vignette eskil={false} offset={0.1} darkness={1.1} />
-        </EffectComposer>
       </Canvas>
     </div>
   );
