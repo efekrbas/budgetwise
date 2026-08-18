@@ -109,11 +109,11 @@ export default function Dashboard() {
     
     setIsAnalyzing(true);
     try {
-      const formattedExpenses = (expenses as any[]).map(e => ({
+      const formattedExpenses = Array.isArray(expenses) ? expenses.map(e => ({
         amount: formatEther(e.amount),
         category: e.category,
         timestamp: new Date(Number(e.timestamp) * 1000).toLocaleString()
-      }));
+      })) : [];
 
       const aiRes = await fetch('/api/ai/analyze', {
         method: 'POST',
@@ -284,9 +284,9 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {expenses && (expenses as any[]).length > 0 ? (
+                {expenses && Array.isArray(expenses) && expenses.length > 0 ? (
                   <div className="space-y-3">
-                    {(expenses as any[]).map((exp, i) => (
+                    {expenses.map((exp, i) => (
                       <div key={i} className="flex justify-between items-center p-3 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
                         <div>
                           <p className="font-medium">{exp.category}</p>
