@@ -7,6 +7,8 @@ const nextConfig = {
       '@x402/evm/exact/client': false,
       '@x402/core/client': false,
       '@x402/svm/exact/client': false,
+      '@x402/evm': false,
+      '@x402/core': false,
     };
     return config;
   },
