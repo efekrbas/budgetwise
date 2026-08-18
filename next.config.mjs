@@ -9,6 +9,8 @@ const nextConfig = {
       '@x402/svm/exact/client': false,
       '@x402/evm': false,
       '@x402/core': false,
+      '@walletconnect/ethereum-provider': false,
+      'accounts': false,
     };
     return config;
   },
