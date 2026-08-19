@@ -1,84 +1,110 @@
-# BudgetWise 0G 🚀
+# 🚀 BudgetWise 0G — Autonomous On-Chain Budgeting & 0G Storage Protocol
 
-**BudgetWise 0G** is a decentralized budget tracker built on the [0G Network](https://0g.ai/), providing ultra-fast, secure, and verifiable expense tracking using Web3 AI and DA (Data Availability).
+[![0G Galileo Testnet](https://img.shields.io/badge/Network-0G%20Galileo%20(16602)-8A2BE2?style=for-the-badge&logo=ethereum)](https://chainscan-galileo.0g.ai/address/0xedE7332ad1459E462B0860d2FeA4c947c3eED55f)
+[![Next.js 15](https://img.shields.io/badge/Frontend-Next.js%2015%20App%20Router-black?style=for-the-badge&logo=next.js)](https://budgetwise-0g.vercel.app/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity)](https://soliditylang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-This project was built for the **0G Bridge by AKINDO** Hackathon.
+**BudgetWise 0G** is an autonomous, AI-guided on-chain spending guardrail protocol built on the **0G Network**. It pairs ultra-fast EVM budget settlement on 0G Galileo with decentralized off-chain data availability on **0G Storage** via verifiable Merkle root proofs and **0G AI Compute** inference.
+
+Built specifically for the **0G Bridge Buildathon on AKINDO**.
 
 ---
 
-## 🎯 The Problem
+### 🌐 Quick Links
 
-Traditional budgeting apps are centralized, putting users' financial data at risk of data harvesting and censorship. Existing decentralized apps suffer from slow transaction times, high gas fees, and expensive on-chain storage. 
+- 🔗 **Live Web Application:** [https://budgetwise-0g.vercel.app/](https://budgetwise-0g.vercel.app/)
+- 📜 **Deployed Smart Contract:** [`0xedE7332ad1459E462B0860d2FeA4c947c3eED55f`](https://chainscan-galileo.0g.ai/address/0xedE7332ad1459E462B0860d2FeA4c947c3eED55f)
+- 🔍 **0G Galileo Explorer:** [View Contract on ChainScan](https://chainscan-galileo.0g.ai/address/0xedE7332ad1459E462B0860d2FeA4c947c3eED55f)
+- 📦 **GitHub Repository:** [https://github.com/efekrbas/budgetwise](https://github.com/efekrbas/budgetwise)
 
-**BudgetWise** solves this by leveraging the 0G network for near-instant transaction finality, scalable data availability, and intelligent AI-driven financial advice.
+---
 
-## 🧠 0G Integration
+## 🎯 Key Innovations & Features
 
-This project integrates multiple 0G components to deliver a seamless decentralized experience:
+1. **Verifiable 0G Storage Receipts (Merkle Proofs):**
+   - Full expense payloads, timestamps, and metadata are offloaded to 0G Storage nodes.
+   - Only the cryptographic `storageRootHash` is recorded on the 0G Chain to minimize gas costs while guaranteeing 100% data integrity.
+   - Built-in interactive **Merkle Proof Inspector** for one-click proof verification.
 
-1. **0G Chain (EVM)**: Smart contracts (`BudgetWise0G.sol`) track user budgets and aggregate total spending on-chain.
-2. **0G Storage / DA**: Expense details and receipts are uploaded to 0G Storage. Only the lightweight `storageRootHash` (Merkle Root) is stored on the 0G Chain, ensuring low gas costs while maintaining verifiable data integrity.
+2. **0G AI Financial Advisor & Inference Engine:**
+   - Real-time heuristic and decentralized AI inference engine analyzing spending patterns.
+   - Delivers actionable advice on storage batching, compute optimization, and gas savings.
 
-## 🏗 Architecture Diagram
+3. **Automated 0G Recurring Streams:**
+   - Manage real-time payment streams for 0G node rentals, compute inference pools, and automated relayer fees with instant pause/resume controls.
+
+4. **Cryptographic ZK Audit Exporter:**
+   - Generates and exports standardized JSON compliance audit reports with SHA-256 integrity hashes for tax and DAO treasury audits.
+
+5. **0G Network & Node Telemetry Monitor:**
+   - Real-time DA bandwidth (50 Gbps+), active storage node cluster health (8/8 online), block latency, and EVM gas telemetry.
+
+---
+
+## 🏗 Modular Architecture
 
 ```mermaid
 graph TD;
-    UI[Frontend: Next.js + React Three Fiber] -->|Connect Wallet| Wallet[Web3 Wallet / wagmi]
-    Wallet -->|Transactions| 0GChain[0G Galileo Testnet]
-    UI -->|Upload Expense Data| API[Next.js API Route]
-    API -->|@0glabs/0g-ts-sdk| 0GStorage[0G Storage Node]
-    0GStorage -.->|Returns Root Hash| API
-    API -.->|Hash| UI
-    UI -->|Call addExpense| 0GChain
-    0GChain -->|Stores Root Hash| Contract[BudgetWise0G Smart Contract]
-    UI -->|AI Inference| AI[0G AI Compute Network]
+    subgraph Client Layer
+        UI[Next.js 15 + Three.js 3D Viewport]
+        Wallet[Web3 Injected / MetaMask]
+    end
+
+    subgraph 0G Network Stack
+        EVM[0G Galileo Testnet - Chain 16602]
+        Contract[BudgetWise0G.sol Contract<br/>0xedE7332ad1459E462B0860d2FeA4c947c3eED55f]
+        Storage[0G Decentralized Storage Node Cluster]
+        Compute[0G AI Inference Engine]
+    end
+
+    UI -->|Connect & Transact| Wallet
+    Wallet -->|setBudget / recordExpense| EVM
+    EVM --> Contract
+    UI -->|Off-chain Payload Upload| Storage
+    Storage -.->|Cryptographic Merkle Root Hash| UI
+    UI -->|Inference Analysis Request| Compute
+    Compute -.->|Spending Optimizations| UI
 ```
 
-## 🛠 Local Deployment & Setup
+---
 
-Follow these steps to run the project locally and deploy the smart contract to the 0G Network.
+## 🛠 Local Development & Deployment
 
-### 1. Prerequisites
-- Node.js (v18+)
-- Metamask or compatible Web3 wallet
-
-### 2. Install Dependencies
+### 1. Clone & Install
 ```bash
+git clone https://github.com/efekrbas/budgetwise.git
+cd budgetwise
 npm install
-# or
-yarn install
 ```
 
-### 3. Environment Variables
+### 2. Configure Environment
 Create a `.env` file in the root directory:
 ```env
-PRIVATE_KEY=your_wallet_private_key_here
-RPC_URL=https://evmrpc-testnet.0g.ai
+PRIVATE_KEY="your_wallet_private_key"
+NEXT_PUBLIC_WC_PROJECT_ID="your_walletconnect_id"
 ```
-*(Ensure your wallet has testnet tokens from the 0G Faucet).*
 
-### 4. Deploy Smart Contract
-Compile and deploy the `BudgetWise0G` smart contract to the 0G Galileo Testnet:
+### 3. Deploy Contract to 0G Galileo
 ```bash
 npx hardhat compile
 npx hardhat run scripts/deploy.js --network 0g-galileo
 ```
-Copy the deployed contract address and update `CONTRACT_ADDRESS` in `src/app/page.tsx`.
 
-### 5. Run the Frontend
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) and connect your wallet!
+Open [http://localhost:3000](http://localhost:3000) to interact with the app.
 
 ---
 
-## 💎 Design & UI (UI/UX Pro Max)
+## 💎 Design & Aesthetics
+- **WebGL Background:** Ultra-optimized 3D particle terrain built with React Three Fiber (`@react-three/fiber`).
+- **Glassmorphism & Bento Grid:** TailwindCSS glass-panel UI with responsive 12-column grid layout.
+- **Ecosystem Marquee:** Real-time animated ticker showcasing 0G modular stack features.
 
-The frontend features a premium, award-winning 3D design:
-- **WebGL Background**: Custom wavy shader built with React Three Fiber (`@react-three/fiber`) and Three.js.
-- **Glassmorphism**: Fully customized TailwindCSS `glass-panel` UI that blurs the 3D background behind cards.
-- **Microinteractions**: Smooth hover states, focus rings, and seamless wallet connection flows using `wagmi` and `viem`.
+---
 
 ## 📜 License
-MIT
+Licensed under the [MIT License](LICENSE).

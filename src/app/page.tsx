@@ -18,6 +18,9 @@ import AppLoader from '@/components/AppLoader';
 import ArchitectureModal from '@/components/ArchitectureModal';
 import RecurringStreamsCard from '@/components/RecurringStreamsCard';
 import ExportAuditReport from '@/components/ExportAuditReport';
+import NetworkTelemetryCard from '@/components/NetworkTelemetryCard';
+
+const CONTRACT_ADDRESS = '0xedE7332ad1459E462B0860d2FeA4c947c3eED55f' as `0x${string}`; // Deployed on 0G Galileo Testnet
 
 interface ExpenseItem {
   amount: bigint;
@@ -132,8 +135,9 @@ export default function Dashboard() {
 
     try {
       if (writeContractAsync) {
+        const CONTRACT_ADDRESS = '0xedE7332ad1459E462B0860d2FeA4c947c3eED55f'; // Deployed on 0G Galileo Testnet
         await writeContractAsync({
-          address: '0x1234567890123456789012345678901234567890',
+          address: CONTRACT_ADDRESS,
           abi: [
             {
               name: 'setBudget',
@@ -739,6 +743,9 @@ export default function Dashboard() {
                 )}
               </CardContent>
             </Card>
+
+            {/* 0G Storage Nodes & Telemetry Card */}
+            <NetworkTelemetryCard />
 
           </div>
 

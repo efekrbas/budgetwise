@@ -1,4 +1,4 @@
-import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-ethers";
 import * as dotenv from "dotenv";
 dotenv.config();
 
